@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="scripts/lib/semantic-ui/semantic.css"/>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+</head>
+<body class="site">
+    <nav id="nav" class="ui fixed menu inverted navbar">
+        <a href="" class="brand item">Darkest Dungeon Info</a>
+        <a href="" class="active item">Heroes</a>
+        <!--
+        <a href="" class="item">Features</a>
+        <a href="" class="item">Contact</a>
+        -->
+        <div class="right menu">
+            <div class="item">
+                Version: <span class="ui purple horizontal label" data-bind="text: svn_revision">....</span>
+            </div>
+        </div>
+    </nav>
+    <main id="main" class="ui page grid">
+        <div class="ui twelve wide centered column">
+                <h1 class="ui header">
+                    <img src="images/indicator.png">
+                    <div class="content">
+                        Darkest Dungeon Info
+                        <div class="sub header">Inside view of the game data files.</div>
+                    </div>
+                </h1>
+        </div>
+        <div class="ui ten wide centered column" id="heroes">
+            <h3 class="ui top attached header">
+                Overview
+                <div id="level-buttons" class="mini icon ui right floated buttons" data-content="Upgrade level for weapon and armour. Details see below." data-position="top center">
+                    <div class="ui button" data-bind="click: dec_level"><i class="chevron left icon"></i></div>
+                    <div class="ui button" data-bind="click: function() { select_level(0) }, css: { active: selected_level() === 0}">0</div>
+                    <div class="ui button" data-bind="click: function() { select_level(1) }, css: { active: selected_level() === 1}">1</div>
+                    <div class="ui button" data-bind="click: function() { select_level(2) }, css: { active: selected_level() === 2}">2</div>
+                    <div class="ui button" data-bind="click: function() { select_level(3) }, css: { active: selected_level() === 3}">3</div>
+                    <div class="ui button" data-bind="click: function() { select_level(4) }, css: { active: selected_level() === 4}">4</div>
+                    <div class="ui button" data-bind="click: inc_level"><i class="chevron right icon"></i></div>
+                </div>
+            </h3>
+            <div class="ui blue attached segment">
+                <table class="ui table">
+                    <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Portrait</th>
+                        <th>ATK</th>
+                        <th>SPD</th>
+                        <th>DMG</th>
+                        <th>CRIT</th>
+                        <th>DEF</th>
+                        <th>HP</th>
+                        <th>PROT</th>
+                    </tr>
+                    </thead>
+                    <tbody  data-bind="foreach: heroes">
+                    <tr data-bind="click: $parent.select_hero, css: { active: $data === $parent.selected_hero() }">
+                        <td data-bind="text: name"></td>
+                        <td><img style="width: 36px; height: 36px" data-bind="formatAttr: { attr: 'src', prefix: 'images/heroes/', value: $data.raw_name(), suffix: '_portrait_roster.png' }"></td>
+                        <td data-bind="text: get_weapon('atk')"></td>
+                        <td data-bind="text: get_spd()"></td>
+                        <td><span data-bind="text: get_weapon('dmg').min"></span>-<span data-bind="text: get_weapon('dmg').max"></span></td>
+                        <td data-bind="text: get_weapon('crit')"></td>
+                        <td data-bind="text: get_armour('def')"></td>
+                        <td data-bind="text: get_armour('hp')"></td>
+                        <td data-bind="text: get_armour('prot')"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3 class="ui top attached left header" data-bind="text: selected_hero().name"></h3>
+            <div class="ui orange attached segment">
+                <div id="hero-sticky" class="ui left attached rail">
+                    <div class="ui orange sticky">
+                        <h3 class="ui header">Hero classes</h3>
+                        <div class="ui vertical menu" data-bind="foreach: heroes">
+                            <a class="item" data-bind="click: $parent.select_hero, css: { active: $data === $parent.selected_hero() }">
+                                <span data-bind="text: name"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui top attached tabular menu" id="hero-tabs">
+                    <a class="active item" data-tab="hero-core">Core data</a>
+                    <a class="item" data-tab="hero-weapon-armour">Weapon / Armour</a>
+                    <a class="item" data-tab="hero-skills">Skills</a>
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="hero-core">
+                    <!--
+                    <div class="progbar ui progress" data-bind="attr: {'data-percent': selected_hero().getResistance('stun').value }">
+                        <div class="bar"><div class="progress"></div></div>
+                    </div>
+                    <div class="progbar ui progress" data-bind="attr: {'data-percent': selected_hero().getResistance('disease').value }">
+                        <div class="bar"><div class="progress"></div></div>
+                    </div>
+                    <div class="progbar ui progress" data-bind="attr: {'data-percent': selected_hero().getResistance('debuff').value }">
+                        <div class="bar"><div class="progress"></div></div>
+                    </div>
+                    <div class="progbar ui progress" data-bind="attr: {'data-percent': selected_hero().getResistance('move').value }">
+                        <div class="bar"><div class="progress"></div></div>
+                    </div>
+                    <div class="progbar ui progress" data-bind="attr: {'data-percent': selected_hero().getResistance('trap').value }">
+                        <div class="bar"><div class="progress"></div></div>
+                    </div>
+                    <div class="progbar ui progress" data-bind="attr: {'data-percent': selected_hero().getResistance('poison').value }">
+                        <div class="bar"><div class="progress"></div></div>
+                    </div>
+                    <div class="progbar ui progress" data-bind="attr: {'data-percent': selected_hero().getResistance('death_blow').value }">
+                        <div class="bar"><div class="progress"></div></div>
+                    </div>
+                    <div class="progbar ui progress" data-bind="attr: {'data-percent': selected_hero().getResistance('bleed').value }">
+                        <div class="bar"><div class="progress"></div></div>
+                    </div>
+                    -->
+                    <!-- TODO: progress funktioniert nicht richtig -->
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="hero-weapon-armour">
+                    <table class="ui table">
+                        <thead>
+                        <tr>
+                            <th>Weapon</th>
+                            <th>Icon</th>
+                            <th>ATK</th>
+                            <th>SPD</th>
+                            <th>DMG</th>
+                            <th>CRIT</th>
+                        </tr>
+                        </thead>
+                        <tbody  data-bind="foreach: selected_hero().weapon">
+                        <tr>
+                            <td data-bind="text: $index"></td>
+                            <td><img style="width: 36px; height: 72px" data-bind="formatAttr: { attr: 'src', prefix: 'images/equip/', value: $data.icon }"></td>
+                            <td data-bind="text: atk"></td>
+                            <td data-bind="text: spd"></td>
+                            <td><span data-bind="text: dmg.min"></span>-<span data-bind="text: dmg.max"></span></td>
+                            <td data-bind="text: crit"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table class="ui table">
+                        <thead>
+                        <tr>
+                            <th>Armour</th>
+                            <th>Icon</th>
+                            <th>DEF</th>
+                            <th>SPD</th>
+                            <th>HP</th>
+                            <th>PROT</th>
+                        </tr>
+                        </thead>
+                        <tbody  data-bind="foreach: selected_hero().armour">
+                        <tr>
+                            <td data-bind="text: $index"></td>
+                            <td><img style="width: 36px; height: 72px" data-bind="formatAttr: { attr: 'src', prefix: 'images/equip/', value: $data.icon }"></td>
+                            <td data-bind="text: def"></td>
+                            <td data-bind="text: spd"></td>
+                            <td data-bind="text: hp"></td>
+                            <td data-bind="text: prot"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="hero-skills">
+                    Third
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="scripts/lib/jquery-2.1.3.min.js"></script>
+    <script src="scripts/lib/knockout-3.3.0.js"></script>
+    <script src="scripts/lib/lodash.min.js"></script>
+    <script src="scripts/lib/semantic-ui/semantic.min.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
