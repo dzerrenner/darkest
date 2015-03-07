@@ -1,3 +1,8 @@
+node_modules/*
+pydarkest/*
+.idea/*
+venv/*
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
