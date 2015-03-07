@@ -1,7 +1,7 @@
-node_modules/*
-pydarkest/*
-.idea/*
-venv/*
+node_modules/
+pydarkest/
+.idea/
+venv/
 
 # Windows image file caches
 Thumbs.db
