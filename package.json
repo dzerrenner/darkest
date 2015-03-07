@@ -1,0 +1,18 @@
+{
+  "name": "darkest",
+  "version": "1.0.0",
+  "description": "Web frontend for game data of the game \"Darkest Dungeon\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gulp": "gulp",
+    "collect": "gulp collect"
+  },
+  "author": "dazer@bluenode.de",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-image-resize": "^0.6.0",
+    "merge-stream": "^0.1.7"
+  }
+}
