@@ -39,6 +39,15 @@ darkest = (function($, ko, _){
 
         self.armour = ko.observableArray(_.values(self.data.armour));
         self.weapon = ko.observableArray(_.values(self.data.weapon));
+
+        var skills = self.data.combat_skills;
+        var skill_array = [];
+        _.forEach(skills, function(l, name) {
+            skill_array.push({name: _.startCase(name), skills: l});
+        });
+
+        self.skills = ko.observableArray(skill_array);
+
         self.resistances = ko.observableArray();
         _.forEach(self.data.resistances, function(n,v) {
             self.resistances.push(new Resistance(v,n));
@@ -66,7 +75,9 @@ darkest = (function($, ko, _){
 
     var MainViewModel = function() {
         var self = this;
-        self.hero_list = ko.observableArray(['bounty_hunter', 'crusader', 'grave_robber', 'hellion', 'highwayman', 'jester', 'leper', 'occultist', 'plagure_doctor', 'vestal']);
+        self.hero_list = ko.observableArray(
+            ['bounty_hunter', 'crusader', 'grave_robber', 'hellion',
+                'highwayman', 'jester', 'leper', 'occultist', 'plague_doctor', 'vestal']);
         self.heroes = ko.observableArray();
         self.selected = ko.observable(-1);
 
