@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <title>Darkest Dungeon Info</title>
     <link rel="stylesheet" href="scripts/lib/semantic-ui/semantic.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
 </head>
@@ -166,7 +166,47 @@
                     </table>
                 </div>
                 <div class="ui bottom attached tab segment" data-tab="hero-skills">
-                    Third
+                    <table class="ui table">
+                        <thead>
+                        <tr>
+                            <th>Skill</th>
+                            <th>Type</th>
+                            <th>Level</th>
+                            <th>Position</th>
+                            <th>Target</th>
+                            <th>DMG</th>
+                            <th>CRIT</th>
+                            <th>Move</th>
+                            <th>Effects</th>
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach: selected_hero().skills">
+                        <tr>
+                            <td rowspan="5" data-bind="text: name"></td>
+                            <td rowspan="5" data-bind="text: skills[0].type"></td>
+                            <td>0</td>
+                            <td data-bind="text: skills[0].launch"></td>
+                            <td data-bind="text: skills[0].target"></td>
+                            <td data-bind="text: skills[0].dmg"></td>
+                            <td data-bind="text: skills[0].crit"></td>
+                            <td data-bind="text: skills[0].move"></td>
+                            <td data-bind="text: skills[0].effect"></td>
+                        </tr>
+                        <!-- ko foreach: skills.slice(1) -->
+
+                        <tr>
+                            <td data-bind="text: ($index() + 1)"></td>
+                            <td data-bind="text: launch"></td>
+                            <td data-bind="text: target"></td>
+                            <td data-bind="text: $data.dmg"></td>
+                            <td data-bind="text: $data.crit"></td>
+                            <td data-bind="text: $data.move"></td>
+                            <td data-bind="text: $data.effect"></td>
+                        </tr>
+                        <!-- /ko -->
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
         </div>
