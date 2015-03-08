@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <title>Darkest Dungeon Info</title>
     <link rel="stylesheet" href="scripts/lib/semantic-ui/semantic.css"/>
+    <link rel="stylesheet" href="dist/style.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
 </head>
 <body class="site">
     <nav id="nav" class="ui fixed menu inverted navbar">
+        <div class="ui mini image">
+            <img src="images/indicator.png">
+        </div>
         <a href="" class="brand item">Darkest Dungeon Info</a>
         <a href="" class="active item">Heroes</a>
         <!--
@@ -15,12 +19,21 @@
         <a href="" class="item">Contact</a>
         -->
         <div class="right menu">
+            <div class="item">Upgrade:</div>
+            <a class="ui item" data-bind="click: dec_level"><i class="chevron left icon"></i></a>
+            <a class="ui item" data-bind="click: function() { select_level(0) }, css: { active: selected_level() === 0}">0</a>
+            <a class="ui item" data-bind="click: function() { select_level(1) }, css: { active: selected_level() === 1}">1</a>
+            <a class="ui item" data-bind="click: function() { select_level(2) }, css: { active: selected_level() === 2}">2</a>
+            <a class="ui item" data-bind="click: function() { select_level(3) }, css: { active: selected_level() === 3}">3</a>
+            <a class="ui item" data-bind="click: function() { select_level(4) }, css: { active: selected_level() === 4}">4</a>
+            <a class="ui item" data-bind="click: inc_level"><i class="chevron right icon"></i></a>
             <div class="item">
                 Version: <span class="ui purple horizontal label" data-bind="text: svn_revision">....</span>
             </div>
         </div>
     </nav>
     <main id="main" class="ui page grid">
+        <!--
         <div class="ui twelve wide centered column">
                 <h1 class="ui header">
                     <img src="images/indicator.png">
@@ -30,51 +43,115 @@
                     </div>
                 </h1>
         </div>
-        <div class="ui ten wide centered column" id="heroes">
+        -->
+        <div class="ui sixteen wide centered column" id="heroes">
             <h3 class="ui top attached header">
                 Overview
-                <div id="level-buttons" class="mini icon ui right floated buttons" data-content="Upgrade level for weapon and armour. Details see below." data-position="top center">
-                    <div class="ui button" data-bind="click: dec_level"><i class="chevron left icon"></i></div>
-                    <div class="ui button" data-bind="click: function() { select_level(0) }, css: { active: selected_level() === 0}">0</div>
-                    <div class="ui button" data-bind="click: function() { select_level(1) }, css: { active: selected_level() === 1}">1</div>
-                    <div class="ui button" data-bind="click: function() { select_level(2) }, css: { active: selected_level() === 2}">2</div>
-                    <div class="ui button" data-bind="click: function() { select_level(3) }, css: { active: selected_level() === 3}">3</div>
-                    <div class="ui button" data-bind="click: function() { select_level(4) }, css: { active: selected_level() === 4}">4</div>
-                    <div class="ui button" data-bind="click: inc_level"><i class="chevron right icon"></i></div>
-                </div>
             </h3>
             <div class="ui blue attached segment">
-                <table class="ui table">
-                    <thead>
-                    <tr>
-                        <th>Class</th>
-                        <th>Portrait</th>
-                        <th>ATK</th>
-                        <th>SPD</th>
-                        <th>DMG</th>
-                        <th>CRIT</th>
-                        <th>DEF</th>
-                        <th>HP</th>
-                        <th>PROT</th>
-                    </tr>
-                    </thead>
-                    <tbody  data-bind="foreach: heroes">
-                    <tr data-bind="click: $parent.select_hero, css: { active: $data === $parent.selected_hero() }">
-                        <td data-bind="text: name"></td>
-                        <td><img style="width: 36px; height: 36px" data-bind="formatAttr: { attr: 'src', prefix: 'images/heroes/', value: $data.raw_name(), suffix: '_portrait_roster.png' }"></td>
-                        <td data-bind="text: get_weapon('atk')"></td>
-                        <td data-bind="text: get_spd()"></td>
-                        <td><span data-bind="text: get_weapon('dmg').min"></span>-<span data-bind="text: get_weapon('dmg').max"></span></td>
-                        <td data-bind="text: get_weapon('crit')"></td>
-                        <td data-bind="text: get_armour('def')"></td>
-                        <td data-bind="text: get_armour('hp')"></td>
-                        <td data-bind="text: get_armour('prot')"></td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div class="ui five doubling cards" data-bind="foreach: heroes">
+                    <div class="ui card" data-bind="css: { active: $data === $parent.selected_hero() }">
+                        <div class="image">
+                            <img data-bind="formatAttr: { attr: 'src', prefix: 'images/heroes/', value: $data.raw_name(), suffix: '_portrait_roster.png' }">
+                        </div>
+                        <div class="content">
+                            <a class="header" data-bind="text: name"></a>
+                            <div class="meta">
+                                <span class="date" data-bind="text: tags"></span>
+                            </div>
+                            <div class="description">
+                                <div class="ui three column grid">
+                                    <div class="center aligned column">
+                                        <div class="ui mini statistic">
+                                            <div class="value"  data-bind="text: get_armour('hp')">
+                                            </div>
+                                            <div class="label">
+                                                HP
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="center aligned column">
+                                        <div class="ui mini statistic">
+                                            <div class="value">
+                                                <span data-bind="text: get_weapon('dmg').min"></span>-<span data-bind="text: get_weapon('dmg').max"></span>
+                                            </div>
+                                            <div class="label">
+                                                SPD
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="center aligned column">
+                                        <div class="ui mini statistic">
+                                            <div class="value"  data-bind="text: get_armour('hp')">
+                                            </div>
+                                            <div class="label">
+                                                DMG
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui two column grid">
+                                    <div class="center aligned column">
+                                        <div class="ui mini statistic">
+                                            <div class="value"  data-bind="text: get_weapon('crit')">
+                                            </div>
+                                            <div class="label">
+                                                CRIT
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="center aligned column">
+                                        <div class="ui mini statistic">
+                                            <div class="value"  data-bind="text: get_armour('def')">
+                                            </div>
+                                            <div class="label">
+                                                DEF
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="extra content">
+                            <a class="details" data-bind="click: function() { show_modal('Resistances') }">
+                                <i class="zoom icon"></i>
+                                resistances
+                            </a>
+                            <a class="details" data-bind="click: function() { show_modal('Equipment') }">
+                                <i class="zoom icon"></i>
+                                equip
+                            </a>
+                            <a class="details" data-bind="click: function() { show_modal('Skills') }">
+                                <i class="zoom icon"></i>
+                                skills
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="details" class="ui fullscreen modal">
+                <i class="close icon"></i>
+                <div class="header"><span data-bind="text: selected_hero().mode"></span>: <span data-bind="text: selected_hero().name"></span></div>
+                <div class="content">
+                    <div class="ui tiny image">
+                        <img data-bind="formatAttr: { attr: 'src', prefix: 'images/heroes/', value: selected_hero().raw_name(), suffix: '_portrait_roster.png' }">
+                    </div>
+                    <div class="description">
+                        <div class="ui eight column grid" data-bind="foreach: selected_hero().resistances">
+                            <div class="column">
+                                <div class="ui small statistic">
+                                    <div class="value" data-bind="text: value"></div>
+                                    <div class="label" data-bind="text: name"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
             <h3 class="ui top attached left header" data-bind="text: selected_hero().name"></h3>
             <div class="ui orange attached segment">
+                <!--
                 <div id="hero-sticky" class="ui left attached rail">
                     <div class="ui orange sticky">
                         <h3 class="ui header">Hero classes</h3>
@@ -85,6 +162,7 @@
                         </div>
                     </div>
                 </div>
+                -->
                 <div class="ui top attached tabular menu" id="hero-tabs">
                     <a class="active item" data-tab="hero-core">Core data</a>
                     <a class="item" data-tab="hero-weapon-armour">Weapon / Armour</a>
@@ -193,7 +271,6 @@
                             <td data-bind="text: skills[0].effect"></td>
                         </tr>
                         <!-- ko foreach: skills.slice(1) -->
-
                         <tr>
                             <td data-bind="text: ($index() + 1)"></td>
                             <td data-bind="text: launch"></td>

@@ -10,18 +10,9 @@ darkest = (function($, ko, _){
         return result;
     }
 
-    var NavViewModel = function() {
-        var self = this;
-        self.svn_revision = ko.observable();
-
-        $.get('data/svn_revision.txt', function(data) {
-            self.svn_revision(data);
-        });
-    };
-
     var Resistance = function(name, value) {
         var self = this;
-        self.name = ko.observable(name);
+        self.name = ko.observable(_.startCase(name));
         self.value = ko.observable(_.trimRight(value, '%'));
     };
 
@@ -69,6 +60,19 @@ darkest = (function($, ko, _){
 
         self.get_spd = function() {
             return parseInt(self.get_weapon('spd')) + parseInt(self.get_armour('spd'));
+        };
+
+        self.tags = ko.computed(function() {
+            var tags = self.data ? self.data.tags || [] : [];
+            return tags.join(", ");
+        });
+
+        self.mode = ko.observable('Resistances');
+
+        self.show_modal = function(mode) {
+            self.mode(mode);
+            self.parent.select_hero(self);
+            $('#details').modal('show');
         }
 
     };
@@ -109,6 +113,12 @@ darkest = (function($, ko, _){
             }
         };
 
+        self.svn_revision = ko.observable();
+
+        $.get('data/svn_revision.txt', function(data) {
+            self.svn_revision(data);
+        });
+
         var calls = [];
         _.forEach(self.hero_list(), function(hero) {
             calls.push($.getJSON('data/heroes/' + hero + ".json", function(data) {
@@ -120,21 +130,22 @@ darkest = (function($, ko, _){
         });
     };
 
-
+    var details_modal;
 
     $(document).ready(function() {
         // $('h1').css({border: '1px solid black'});
-        $('#level-buttons').popup();
-
-
+        // $('#level-buttons').popup();
         $('.item', '#hero-tabs').tab();
+        details_modal = $('.ui.modal', '#details').modal();
         /*
         $('.progbar').each(function(el) {
             var $e = $(el);
             $e.progress({percent: $e.data('progress')});
         });
         */
-
+        $('a.details').click(function() {
+            details_modal.modal('show');
+        });
     });
 
     ko.bindingHandlers.formatAttr = {
@@ -146,15 +157,15 @@ darkest = (function($, ko, _){
         }
     };
 
-    var navModel = new NavViewModel();
-    var mainModel = new MainViewModel();
+    var ViewModel = new MainViewModel();
 
-    ko.applyBindings(mainModel, document.getElementById("main"));
-    ko.applyBindings(navModel, document.getElementById("nav"));
+    ko.applyBindings(ViewModel);
 
     return {
-        nav: navModel,
-        data: mainModel
+        info: ViewModel,
+        debug: {
+            details: details_modal
+        }
     };
 
 })(jQuery, ko, _);
