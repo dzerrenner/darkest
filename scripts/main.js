@@ -10,6 +10,15 @@ darkest = (function($, ko, _){
         return result;
     }
 
+    ko.bindingHandlers.formatAttr = {
+        init: function(element, accessor) {
+            $(element).attr(accessor().attr, composeString(accessor()));
+        },
+        update: function(element, accessor) {
+            $(element).attr(accessor().attr, composeString(accessor()));
+        }
+    };
+
     var Resistance = function(name, value) {
         var self = this;
         self.name = ko.observable(_.startCase(name));
@@ -113,58 +122,53 @@ darkest = (function($, ko, _){
             }
         };
 
+        self.add_hero = function(hero) {
+            self.heroes.push(hero);
+        };
+
         self.svn_revision = ko.observable();
 
         $.get('data/svn_revision.txt', function(data) {
             self.svn_revision(data);
         });
 
-        var calls = [];
-        _.forEach(self.hero_list(), function(hero) {
-            calls.push($.getJSON('data/heroes/' + hero + ".json", function(data) {
-                self.heroes.push(new Hero(data, self));
-            }));
-        });
-        $.when(calls).done( function() {
-            self.selected(0);
-        });
-    };
-
-    var details_modal;
-
-    $(document).ready(function() {
-        // $('h1').css({border: '1px solid black'});
-        // $('#level-buttons').popup();
-        $('.item', '#hero-tabs').tab();
-        details_modal = $('.ui.modal', '#details').modal();
-        /*
-        $('.progbar').each(function(el) {
-            var $e = $(el);
-            $e.progress({percent: $e.data('progress')});
-        });
-        */
-        $('a.details').click(function() {
-            details_modal.modal('show');
-        });
-    });
-
-    ko.bindingHandlers.formatAttr = {
-        init: function(element, accessor) {
-            $(element).attr(accessor().attr, composeString(accessor()));
-        },
-        update: function(element, accessor) {
-            $(element).attr(accessor().attr, composeString(accessor()));
-        }
     };
 
     var ViewModel = new MainViewModel();
 
-    ko.applyBindings(ViewModel);
+    // start loading data before domready fires
+    var hero_list = ['bounty_hunter', 'crusader', 'grave_robber', 'hellion',
+        'highwayman', 'jester', 'leper', 'occultist', 'plague_doctor', 'vestal'];
+    var hero_data = [];
+    var calls = [];
+    _.forEach(hero_list, function(hero) {
+        calls.push($.getJSON('data/heroes/' + hero + ".json", function(data) {
+            hero_data.push(data);
+        }));
+    });
+
+    $(document).ready(function() {
+        console.log("ready.");
+        $.when.apply($, calls).done( function() {
+            console.log("loading done.");
+            _.forEach(hero_data, function(data) {
+                ViewModel.add_hero(new Hero(data, ViewModel))
+            });
+            ViewModel.selected(0);
+
+            $('.item', '#hero-tabs').tab();
+            $('#heroes-dropdown').dropdown();
+
+            // remove dimmer if all loading is done.
+            ko.applyBindings(ViewModel);
+            $('#main-dimmer').dimmer('hide');
+        });
+    });
 
     return {
         info: ViewModel,
         debug: {
-            details: details_modal
+            hero_data: hero_data
         }
     };
 

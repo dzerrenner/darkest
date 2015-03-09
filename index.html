@@ -13,7 +13,16 @@
             <img src="images/indicator.png">
         </div>
         <a href="" class="brand item">Darkest Dungeon Info</a>
-        <a href="" class="active item">Heroes</a>
+        <div id="heroes-dropdown" class="ui dropdown active link item">
+            Heroes
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <a class="item"><i class="edit icon"></i> Edit Profile</a>
+                <a class="item"><i class="globe icon"></i> Choose Language</a>
+                <a class="item"><i class="settings icon"></i> Account Settings</a>
+            </div>
+        </div>
+
         <!--
         <a href="" class="item">Features</a>
         <a href="" class="item">Contact</a>
@@ -32,6 +41,8 @@
             </div>
         </div>
     </nav>
+    <div class="ui dimmable dimmed segment">
+    <div id="main-dimmer" class="ui active page dimmer"><div class="ui text loader">Loading</div></div>
     <main id="main" class="ui page grid">
         <!--
         <div class="ui twelve wide centered column">
@@ -288,6 +299,7 @@
             </div>
         </div>
     </main>
+    </div>
     <script src="scripts/lib/jquery-2.1.3.min.js"></script>
     <script src="scripts/lib/knockout-3.3.0.js"></script>
     <script src="scripts/lib/lodash.min.js"></script>
