@@ -157,7 +157,7 @@ darkest = (function($, ko, _){
             ViewModel.selected(0);
 
             $('.item', '#hero-tabs').tab();
-            $('#heroes-dropdown').dropdown();
+            $('.ui.dropdown').dropdown();
 
             // remove dimmer if all loading is done.
             ko.applyBindings(ViewModel);
