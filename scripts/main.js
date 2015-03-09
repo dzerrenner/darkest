@@ -10,6 +10,16 @@ darkest = (function($, ko, _){
         return result;
     }
 
+    var get_debug_timer = function() {
+        return "[" + moment().diff(DDEBUG.darkest_timer) + "ms]";
+    };
+
+    var debug = function() {
+        if (DDEBUG.active) {
+            console.log.apply(console, arguments);
+        }
+    };
+
     ko.bindingHandlers.formatAttr = {
         init: function(element, accessor) {
             $(element).attr(accessor().attr, composeString(accessor()));
@@ -134,9 +144,13 @@ darkest = (function($, ko, _){
 
     };
 
+    debug(get_debug_timer(), "creating viewmodel.");
     var ViewModel = new MainViewModel();
 
     // start loading data before domready fires
+    debug(get_debug_timer(), "start loading data.");
+    // TODO: move this to the beginning of the markup to speed up loading time
+
     var hero_list = ['bounty_hunter', 'crusader', 'grave_robber', 'hellion',
         'highwayman', 'jester', 'leper', 'occultist', 'plague_doctor', 'vestal'];
     var hero_data = [];
@@ -147,17 +161,19 @@ darkest = (function($, ko, _){
         }));
     });
 
+    // end loading code
+
     $(document).ready(function() {
-        console.log("ready.");
+        debug(get_debug_timer(), "dom ready.");
         $.when.apply($, calls).done( function() {
-            console.log("loading done.");
+            debug(get_debug_timer(), "loading done.");
             _.forEach(hero_data, function(data) {
                 ViewModel.add_hero(new Hero(data, ViewModel))
             });
             ViewModel.selected(0);
 
             $('.item', '#hero-tabs').tab();
-            $('.ui.dropdown').dropdown();
+            $('#heroes-dropdown').dropdown();
 
             // remove dimmer if all loading is done.
             ko.applyBindings(ViewModel);
