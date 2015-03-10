@@ -1,4 +1,18 @@
-darkest = (function($, ko, _){
+require.config({
+    baseUrl: "",
+    paths: {
+        "knockout": "//cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-debug",
+        "lodash": "//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.4.0/lodash.min",
+        "moment": "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min",
+        "jquery": "//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min",
+        "semantic": "//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.1/semantic.min",
+        "knockout-amd-helpers": "scripts/lib/knockout-amd-helpers",
+        "text": "scripts/lib/text"
+    }
+});
+
+// darkest = (function($, ko, _){
+require(["jquery", "knockout", "lodash", "moment", "semantic", "knockout-amd-helpers", "text"], function($, ko, _, moment){
     function composeString(bindingConfig) {
         var result = bindingConfig.value;
         if (bindingConfig.prefix) {
@@ -16,7 +30,9 @@ darkest = (function($, ko, _){
 
     var debug = function() {
         if (DDEBUG.active) {
-            console.log.apply(console, arguments);
+            var args = Array.prototype.slice.call(arguments);
+            args.unshift(get_debug_timer());
+            console.log.apply(console, args);
         }
     };
 
@@ -87,13 +103,6 @@ darkest = (function($, ko, _){
         });
 
         self.mode = ko.observable('Resistances');
-
-        self.show_modal = function(mode) {
-            self.mode(mode);
-            self.parent.select_hero(self);
-            $('#details').modal('show');
-        }
-
     };
 
     var MainViewModel = function() {
@@ -105,20 +114,29 @@ darkest = (function($, ko, _){
         self.selected = ko.observable(-1);
 
         self.selected_hero = ko.computed(function() {
-            if (self.heroes().length > 0) {
-                return self.heroes()[self.selected()];
-            } else {
-                return new Hero({name:"", resistances:{stun:0,disease:0,debuff:0,move:0,trap:0,poison:0,death_blow:0,bleed:0}});
+            if (DDEBUG.acitve) {
+                var name = "undefined";
+                if (self.heroes()[self.selected()]) {
+                    name = self.heroes()[self.selected()].name();
+                }
+                debug("selected_hero: ", self.selected(), name);
             }
+            return self.heroes()[self.selected()];
         });
 
+        self.show_details = function(hero) {
+            debug("show hero");
+            self.select_hero(hero);
+            self.nav({section: 'heroes', page: 'details'});
+        };
+
         self.select_hero = function(hero) {
+            debug("select_hero");
             self.selected(_.indexOf(self.heroes(), hero));
         };
 
         self.selected_level = ko.observable(0);
         self.select_level = function(level) {
-            console.log(level);
             self.selected_level(level);
         };
         self.inc_level = function() {
@@ -134,7 +152,16 @@ darkest = (function($, ko, _){
 
         self.add_hero = function(hero) {
             self.heroes.push(hero);
+            self.selected(self.heroes().length - 1);
         };
+
+        self.nav = ko.observable({section: 'heroes', page: 'overview'});
+
+
+        self.show_hero_overview = ko.computed(function() {
+            var nav = self.nav();
+            return (nav.section == 'heroes' && nav.page == 'overview');
+        });
 
         self.svn_revision = ko.observable();
 
@@ -142,13 +169,21 @@ darkest = (function($, ko, _){
             self.svn_revision(data);
         });
 
+        if (DDEBUG.active) {
+            self.selected_level.subscribe(function(newValue) {
+                debug("new upgrade level selected:", newValue);
+            });
+            self.selected.subscribe(function(newValue) {
+                debug("new hero selected:", newValue);
+            });
+        }
     };
 
-    debug(get_debug_timer(), "creating viewmodel.");
-    var ViewModel = new MainViewModel();
+    debug("creating viewmodel.");
+    var viewmodel = new MainViewModel();
 
     // start loading data before domready fires
-    debug(get_debug_timer(), "start loading data.");
+    debug("start loading data.");
     // TODO: move this to the beginning of the markup to speed up loading time
 
     var hero_list = ['bounty_hunter', 'crusader', 'grave_robber', 'hellion',
@@ -164,28 +199,30 @@ darkest = (function($, ko, _){
     // end loading code
 
     $(document).ready(function() {
-        debug(get_debug_timer(), "dom ready.");
+        debug("dom ready.");
         $.when.apply($, calls).done( function() {
-            debug(get_debug_timer(), "loading done.");
-            _.forEach(hero_data, function(data) {
-                ViewModel.add_hero(new Hero(data, ViewModel))
+            debug("loading done, creating hero instances.");
+            _.forEach(_.sortBy(hero_data, 'name'), function(data) {
+                debug("add hero:", data.name);
+                viewmodel.add_hero(new Hero(data, viewmodel))
             });
-            ViewModel.selected(0);
+            debug("object creation done.");
+            viewmodel.selected(0);
 
             $('.item', '#hero-tabs').tab();
             $('#heroes-dropdown').dropdown();
 
             // remove dimmer if all loading is done.
-            ko.applyBindings(ViewModel);
+            ko.applyBindings(viewmodel);
             $('#main-dimmer').dimmer('hide');
         });
     });
 
     return {
-        info: ViewModel,
+        info: viewmodel,
         debug: {
             hero_data: hero_data
         }
     };
 
-})(jQuery, ko, _);
+});
