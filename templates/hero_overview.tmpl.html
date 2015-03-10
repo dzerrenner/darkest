@@ -1,0 +1,76 @@
+<h3 class="ui top attached header">
+    Overview
+</h3>
+<div class="ui blue attached segment">
+    <div class="ui five doubling cards" data-bind="foreach: heroes">
+        <div class="ui card" data-bind="css: { active: $data === $parent.selected_hero() }">
+            <div class="image">
+                <img data-bind="formatAttr: { attr: 'src', prefix: 'images/heroes/', value: $data.raw_name(), suffix: '_portrait_roster.png' }">
+            </div>
+            <div class="content">
+                <a class="header" data-bind="text: name"></a>
+                <div class="meta">
+                    <span class="date" data-bind="text: tags"></span>
+                </div>
+                <div class="description">
+                    <div class="ui three column grid">
+                        <div class="center aligned column">
+                            <div class="ui mini statistic">
+                                <div class="value"  data-bind="text: get_armour('hp')">
+                                </div>
+                                <div class="label">
+                                    HP
+                                </div>
+                            </div>
+                        </div>
+                        <div class="center aligned column">
+                            <div class="ui mini statistic">
+                                <div class="value">
+                                    <span data-bind="text: get_weapon('dmg').min"></span>-<span data-bind="text: get_weapon('dmg').max"></span>
+                                </div>
+                                <div class="label">
+                                    SPD
+                                </div>
+                            </div>
+                        </div>
+                        <div class="center aligned column">
+                            <div class="ui mini statistic">
+                                <div class="value"  data-bind="text: get_armour('hp')">
+                                </div>
+                                <div class="label">
+                                    DMG
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui two column grid">
+                        <div class="center aligned column">
+                            <div class="ui mini statistic">
+                                <div class="value"  data-bind="text: get_weapon('crit')">
+                                </div>
+                                <div class="label">
+                                    CRIT
+                                </div>
+                            </div>
+                        </div>
+                        <div class="center aligned column">
+                            <div class="ui mini statistic">
+                                <div class="value"  data-bind="text: get_armour('def')">
+                                </div>
+                                <div class="label">
+                                    DEF
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="extra content">
+                <a class="details" data-bind="click: $parent.show_details">
+                    <i class="zoom icon"></i>
+                    show details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
