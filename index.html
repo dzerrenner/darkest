@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="style.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
     <script>var DDEBUG = {active: true}; if (DDEBUG.active) { DDEBUG.darkest_timer = new Date() }</script>
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.1/semantic.min.js"></script> -->
 </head>
 <body class="site">
     <!-- navigation -->
@@ -21,7 +19,7 @@
         <div id="heroes-dropdown" class="ui dropdown">
             <div class="ui dropdown item">Heroes <i class="dropdown icon"></i></div>
             <div class="menu" data-bind="foreach: heroes">
-                <a class="item" data-bind="text: name, css: { active: $data === $parent.selected_hero(), selected: $data === $parent.selected_hero() }, click: $parent.select_hero"></a>
+                <a class="item" data-bind="text: name, css: { active: $data === $parent.selected_hero(), selected: $data === $parent.selected_hero() }, click: $parent.show_details"></a>
             </div>
         </div>
         <!-- level select -->
@@ -43,13 +41,10 @@
     <!-- loader -->
     <div id="main-dimmer" class="ui active page dimmer"><div class="ui text loader">Loading</div></div>
     <main id="main" class="ui page grid">
-        <div class="ui sixteen wide centered column" id="heroes" data-bind="template: { name: 'hero_overview', if: show_hero_overview }"></div>
+        <div class="ui sixteen wide centered column" id="heroes" data-bind="template: { name: 'hero_overview', if: nav_path('heroes', 'overview') }"></div>
+        <div class="ui sixteen wide centered column" id="heroes" data-bind="template: { name: 'hero_detail',   if: nav_path('heroes', 'details') }"></div>
     </main>
     </div>
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-debug.js"></script>  -->
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.4.0/lodash.min.js"></script>  -->
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script> -->
     <script data-main="scripts/main.js" src="scripts/lib/require.js"></script>
-    <!-- <script src="scripts/main.js"></script> -->
 </body>
 </html>
